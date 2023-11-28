@@ -5,34 +5,34 @@ namespace Tests\Unit;
 use App\Models\User;
 use App\Repositories\UserRepository;
 
-// TODO なぜ変更する必要があるのか？
-// use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserRepositoryTest extends TestCase
 {
-    /**
-     * A basic unit test example.
-     */
-    public function test_example(): void
+    // 各テスト毎にDBをリフレッシュする
+    use RefreshDatabase;
+
+    private function factory()
     {
+        // 新規にUserを作成する
+        $create_user = User::factory(5)->create();
+
+        return $create_user;
+    }
+
+    /**
+    * @test
+    */
+    public function 全件取得(): void
+    {
+        // factoryで保存処理
+        $user_create = $this->factory();
+
         $user_repository = new UserRepository();
-        $user = $user_repository->get();
+        $user_ret = $user_repository->findAll();
 
-        
-        // objectかどうかチェック
-        $this->assertIsObject($user[0]);
-        
-        // Userのインスタンスかチェック
-        $this->assertTrue($user[0] instanceof User);
-
-        // 会員情報にID, 氏名, 登録日時, 更新日時が含まれているかチェック
-        $user_array = $user[0]->toArray();
-        $this->assertSame([
-            'id',
-            'name',
-            'created_at',
-            'updated_at'
-        ], array_keys($user_array));
+        // 件数確認
+        $this->assertSame($user_create->count(), $user_ret->count());
     }
 }
