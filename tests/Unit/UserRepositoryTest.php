@@ -24,7 +24,7 @@ class UserRepositoryTest extends TestCase
     /**
     * @test
     */
-    public function 全件取得(): void
+    public function findAll関数実行時、データベースのUserレコードが全て取得できること(): void
     {
         // factoryで保存処理
         $user_create = $this->factory();
@@ -34,5 +34,10 @@ class UserRepositoryTest extends TestCase
 
         // 件数確認
         $this->assertSame($user_create->count(), $user_ret->count());
+
+        // factoryで保存した内容と一致するか確認
+        foreach($user_create as $user_create_i => $user_create_model) {
+            $this->assertEquals($user_create_model->name, $user_ret[$user_create_i]->name);
+        }
     }
 }
