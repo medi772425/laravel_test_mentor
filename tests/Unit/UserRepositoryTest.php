@@ -26,18 +26,28 @@ class UserRepositoryTest extends TestCase
     */
     public function findAll関数実行時、データベースのUserレコードが全て取得できること(): void
     {
+        // Given
         // factoryで保存処理
-        $user_create = $this->factory();
-
+        $expected = $this->factory();
+        // テスト対象のclassのinstanceを生成
         $user_repository = new UserRepository();
-        $user_ret = $user_repository->findAll();
 
+        // When
+        $actual = $user_repository->findAll();
+
+        // Then
         // 件数確認
-        $this->assertSame($user_create->count(), $user_ret->count());
+        $this->assertSame($expected->count(), $actual->count());
 
         // factoryで保存した内容と一致するか確認
-        foreach($user_create as $user_create_i => $user_create_model) {
-            $this->assertEquals($user_create_model->name, $user_ret[$user_create_i]->name);
+        foreach($actual as $index => $actual_user) {
+            // userモデルの各プロパティの値が期待値と同値であるか、検証
+            $this->assertEquals($expected[$index]->id, $actual_user->id);
+            $this->assertEquals($expected[$index]->name, $actual_user->name);
+            $this->assertEquals($expected[$index]->email, $actual_user->email);
+            $this->assertEquals($expected[$index]->email_verified_at, $actual_user->email_verified_at);
+            $this->assertEquals($expected[$index]->password, $actual_user->password);
+            $this->assertEquals($expected[$index]->remember_token, $actual_user->remember_token);
         }
     }
 }
